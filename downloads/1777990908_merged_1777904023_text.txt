@@ -1,0 +1,36 @@
+--- Page 1 ---
+DS 
+Reference  
+•
+A reference is a just another name for the same the variable  
+Example : 
+Int main( ) 
+{ 
+Int a = 10; 
+Int &r = a;       - syntax of reference  
+Count << a ; 
+r++; 
+Cout<< r ; 
+Cout << a ; 
+} 
+• This is use for parameter passing  
+• For writing small functions we use reference
+
+
+--- Page 2 ---
+DS 
+Reference  
+•
+A reference is a just another name for the same the variable  
+Example : 
+Int main( ) 
+{ 
+Int a = 10; 
+Int &r = a;       - syntax of reference  
+Count << a ; 
+r++; 
+Cout<< r ; 
+Cout << a ; 
+} 
+• This is use for parameter passing  
+• For writing small functions we use reference

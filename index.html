@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick PDF Converter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-file-pdf"></i>
+            <span>Quick PDF Converter</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" class="active">Home</a></li>
+            <li><a href="#tools-section">Tools</a></li>
+            <li><a href="#features-section">Features</a></li>
+            <li><a href="#footer">Contact</a></li>
+        </ul>
+        <button class="hamburger" id="hamburger"><i class="fa-solid fa-bars"></i></button>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1>Convert PDFs Quickly and Easily</h1>
+            <p>Free online PDF tools — convert, merge, split, compress, rotate, watermark and more.</p>
+            <button id="get-started-btn" class="btn-primary btn-large">Get Started <i class="fa-solid fa-arrow-down"></i></button>
+        </div>
+    </header>
+
+    <!-- Tools Section -->
+    <section id="tools-section" class="tools-section">
+        <div class="container">
+            <h2 class="section-title">All PDF Tools</h2>
+
+            <div class="tool-category">
+                <div class="category-label"><i class="fa-solid fa-arrows-left-right"></i> Convert</div>
+                <div class="tools-grid">
+                    <div class="tool-card" data-tool="pdf-to-word" data-accept=".pdf" data-multiple="false">
+                        <div class="icon-bg pdf-word"><i class="fa-solid fa-file-word"></i></div>
+                        <h3>PDF to Word</h3>
+                        <p>Convert PDF files into editable DOCX documents.</p>
+                    </div>
+                    <div class="tool-card" data-tool="word-to-pdf" data-accept=".doc,.docx" data-multiple="false">
+                        <div class="icon-bg word-pdf"><i class="fa-solid fa-file-pdf"></i></div>
+                        <h3>Word to PDF</h3>
+                        <p>Make DOC and DOCX files easy to share as PDFs.</p>
+                    </div>
+                    <div class="tool-card" data-tool="jpg-to-pdf" data-accept=".jpg,.jpeg,.png" data-multiple="true">
+                        <div class="icon-bg jpg-pdf"><i class="fa-regular fa-images"></i></div>
+                        <h3>JPG to PDF</h3>
+                        <p>Convert JPG/PNG images into a single PDF file.</p>
+                    </div>
+                    <div class="tool-card" data-tool="pdf-to-jpg" data-accept=".pdf" data-multiple="false">
+                        <div class="icon-bg pdf-jpg"><i class="fa-solid fa-image"></i></div>
+                        <h3>PDF to JPG</h3>
+                        <p>Convert each PDF page into a JPG image.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tool-category">
+                <div class="category-label"><i class="fa-solid fa-layer-group"></i> Organise</div>
+                <div class="tools-grid">
+                    <div class="tool-card" data-tool="merge" data-accept=".pdf" data-multiple="true">
+                        <div class="icon-bg merge"><i class="fa-solid fa-object-group"></i></div>
+                        <h3>Merge PDF</h3>
+                        <p>Combine multiple PDFs into one document.</p>
+                    </div>
+                    <div class="tool-card" data-tool="split" data-accept=".pdf" data-multiple="false">
+                        <div class="icon-bg split"><i class="fa-solid fa-scissors"></i></div>
+                        <h3>Split PDF</h3>
+                        <p>Extract pages or split a PDF into separate files.</p>
+                    </div>
+                    <div class="tool-card" data-tool="rotate" data-accept=".pdf" data-multiple="false">
+                        <div class="icon-bg rotate"><i class="fa-solid fa-rotate-right"></i></div>
+                        <h3>Rotate PDF</h3>
+                        <p>Rotate all pages in a PDF by 90, 180 or 270 degrees.</p>
+                    </div>
+                    <div class="tool-card" data-tool="compress" data-accept=".pdf" data-multiple="false">
+                        <div class="icon-bg compress"><i class="fa-solid fa-compress"></i></div>
+                        <h3>Compress PDF</h3>
+                        <p>Reduce file size while maintaining PDF quality.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tool-category">
+                <div class="category-label"><i class="fa-solid fa-shield-halved"></i> Security & More</div>
+                <div class="tools-grid">
+                    <div class="tool-card" data-tool="watermark" data-accept=".pdf" data-multiple="false">
+                        <div class="icon-bg watermark"><i class="fa-solid fa-stamp"></i></div>
+                        <h3>Watermark PDF</h3>
+                        <p>Add a custom text watermark to your PDF pages.</p>
+                    </div>
+                    <div class="tool-card" data-tool="protect" data-accept=".pdf" data-multiple="false">
+                        <div class="icon-bg protect"><i class="fa-solid fa-lock"></i></div>
+                        <h3>Protect PDF</h3>
+                        <p>Encrypt your PDF with a password to restrict access.</p>
+                    </div>
+                    <div class="tool-card" data-tool="unlock" data-accept=".pdf" data-multiple="false">
+                        <div class="icon-bg unlock"><i class="fa-solid fa-lock-open"></i></div>
+                        <h3>Unlock PDF</h3>
+                        <p>Remove password protection from a PDF file.</p>
+                    </div>
+                    <div class="tool-card" data-tool="extract-text" data-accept=".pdf" data-multiple="false">
+                        <div class="icon-bg extract"><i class="fa-solid fa-file-lines"></i></div>
+                        <h3>Extract Text</h3>
+                        <p>Extract all text from a PDF into a .txt file.</p>
+                    </div>
+                    <div class="tool-card" data-tool="pdf-info" data-accept=".pdf" data-multiple="false">
+                        <div class="icon-bg info"><i class="fa-solid fa-circle-info"></i></div>
+                        <h3>PDF Info</h3>
+                        <p>View page count, metadata and file details.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Upload Section -->
+    <section id="upload-section" class="upload-section">
+        <div class="container">
+            <div class="upload-box">
+                <h2 id="selected-tool-title">Please Select a Tool Above</h2>
+                <p id="tool-instruction" class="tool-instruction">Select a tool from the list to get started.</p>
+
+                <!-- Tool-specific options -->
+                <div id="tool-options"></div>
+
+                <div class="drop-zone" id="drop-zone" style="pointer-events: none; opacity: 0.6;">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <h3>Select or drop files here</h3>
+                    <input type="file" id="file-input" hidden>
+                    <button id="select-files-btn" class="btn-outline">Choose Files</button>
+                </div>
+
+                <div id="file-list" class="file-list"></div>
+
+                <div id="action-area" class="action-area hidden">
+                    <button id="convert-btn" class="btn-success btn-large">
+                        <span id="btn-text">Convert Now</span>
+                        <i id="btn-spinner" class="fa-solid fa-spinner fa-spin hidden"></i>
+                    </button>
+
+                    <div id="status-message" class="status-message"></div>
+
+                    <div id="download-area" class="download-area hidden" style="margin-top: 1rem;">
+                        <a id="download-btn" href="#" class="btn-primary btn-large" download>
+                            <i class="fa-solid fa-download"></i> Download File
+                        </a>
+                        <button id="reset-btn" class="btn-outline" style="margin-left: 1rem;">
+                            <i class="fa-solid fa-rotate-left"></i> Convert Another
+                        </button>
+                    </div>
+
+                    <!-- PDF Info results panel -->
+                    <div id="info-result" class="info-result hidden"></div>
+
+                    <!-- Compression result panel -->
+                    <div id="compression-result" class="compression-result hidden"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features-section" class="features-section">
+        <div class="container">
+            <h2 class="section-title">Why Choose Quick PDF Converter?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fa-solid fa-bolt"></i>
+                    <h3>Fast Conversion</h3>
+                    <p>Lightning-fast processing with no waiting or queue times.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <h3>Easy to Use</h3>
+                    <p>Simple drag-and-drop interface for anyone to use.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <h3>Secure Handling</h3>
+                    <p>Files are automatically deleted from servers after conversion.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-infinity"></i>
+                    <h3>Always Free</h3>
+                    <p>All tools are completely free with no limits or sign-up required.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-laptop-mobile"></i>
+                    <h3>Works Everywhere</h3>
+                    <p>Works on desktop, tablet, and mobile seamlessly.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-toolbox"></i>
+                    <h3>12+ PDF Tools</h3>
+                    <p>All essential PDF tools in one place — convert, edit, secure.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button class="faq-question">Is Quick PDF Converter really free? <i class="fa-solid fa-chevron-down"></i></button>
+                    <div class="faq-answer"><p>Yes! All tools are completely free with no sign-up, no watermarks, and no file limits.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">Are my files secure? <i class="fa-solid fa-chevron-down"></i></button>
+                    <div class="faq-answer"><p>Yes. Files are processed on our server and automatically deleted immediately after you download the result.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">What is the maximum file size? <i class="fa-solid fa-chevron-down"></i></button>
+                    <div class="faq-answer"><p>You can upload files up to 100 MB. For very large files, we recommend compressing them first.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">Does it work on mobile? <i class="fa-solid fa-chevron-down"></i></button>
+                    <div class="faq-answer"><p>Absolutely. The site is fully responsive and works on any modern browser on any device.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <i class="fa-solid fa-file-pdf"></i>
+                <span>Quick PDF Converter</span>
+            </div>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contact Us</a>
+            </div>
+            <p class="copyright">&copy; 2026 Quick PDF Converter. All rights reserved.</p>
+            <p style="font-size: 0.8rem; color: #64748b; margin-top: 0.5rem; text-align: center;">Created by Abhijith</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
