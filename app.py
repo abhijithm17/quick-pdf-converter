@@ -1,4 +1,5 @@
 import os
+import sys
 import io
 import time
 import zipfile
@@ -23,6 +24,9 @@ try:
     from docx2pdf import convert as docx_convert
 except ImportError:
     docx_convert = None
+
+# docx2pdf drives Microsoft Word, so it only works on Windows/macOS (not on Linux hosts like Render)
+WORD_TO_PDF_AVAILABLE = docx_convert is not None and sys.platform in ("win32", "darwin")
 
 BASE_DIR = Path(__file__).resolve().parent
 UPLOAD_FOLDER   = BASE_DIR / "uploads"
@@ -58,13 +62,26 @@ def unique_name(filename):
     return f"{int(time.time())}_{safe}"
 
 
+def upload_path(filename):
+    """Resolve a client-supplied filename inside UPLOAD_FOLDER (blocks ../ tricks)."""
+    safe = secure_filename(filename or "")
+    if not safe:
+        raise ValueError("Invalid filename")
+    return UPLOAD_FOLDER / safe
+
+
 def is_pdf(filename):
     return filename.lower().endswith(".pdf")
 
 
+@app.errorhandler(ValueError)
+def handle_bad_input(e):
+    return jsonify({"error": str(e)}), 400
+
+
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index.html", word_to_pdf=WORD_TO_PDF_AVAILABLE)
 
 
 # ─── UPLOAD ──────────────────────────────────────────────────────────────────
@@ -99,7 +116,7 @@ def compress_pdf():
     if not is_pdf(filename):
         return jsonify({"error": "Compress PDF accepts only PDF files"}), 400
 
-    input_path = UPLOAD_FOLDER / filename
+    input_path = upload_path(filename)
     if not input_path.exists():
         return jsonify({"error": "Uploaded file not found"}), 404
 
@@ -182,7 +199,7 @@ def merge_pdf():
     try:
         merger = PyPDF2.PdfMerger()
         for filename in filenames:
-            file_path = UPLOAD_FOLDER / filename
+            file_path = upload_path(filename)
             if not file_path.exists():
                 merger.close()
                 return jsonify({"error": f"File not found: {filename}"}), 404
@@ -190,7 +207,7 @@ def merge_pdf():
         merger.write(str(output_path))
         merger.close()
         for filename in filenames:
-            remove_file(UPLOAD_FOLDER / filename)
+            remove_file(upload_path(filename))
         return jsonify({"success": True, "filename": output_filename, "download_url": f"/download/{output_filename}"})
     except Exception as e:
         return jsonify({"error": f"Merge failed: {str(e)}"}), 500
@@ -209,7 +226,7 @@ def split_pdf():
     if not is_pdf(filename):
         return jsonify({"error": "Split PDF accepts only PDF files"}), 400
 
-    input_path = UPLOAD_FOLDER / filename
+    input_path = upload_path(filename)
     if not input_path.exists():
         return jsonify({"error": "Uploaded file not found"}), 404
 
@@ -267,7 +284,7 @@ def rotate_pdf():
     if not is_pdf(filename):
         return jsonify({"error": "Rotate PDF accepts only PDF files"}), 400
 
-    input_path = UPLOAD_FOLDER / filename
+    input_path = upload_path(filename)
     if not input_path.exists():
         return jsonify({"error": "Uploaded file not found"}), 404
 
@@ -303,7 +320,7 @@ def watermark_pdf():
     if not is_pdf(filename):
         return jsonify({"error": "Watermark PDF accepts only PDF files"}), 400
 
-    input_path = UPLOAD_FOLDER / filename
+    input_path = upload_path(filename)
     if not input_path.exists():
         return jsonify({"error": "Uploaded file not found"}), 404
 
@@ -370,7 +387,7 @@ def protect_pdf():
     if not is_pdf(filename):
         return jsonify({"error": "Protect PDF accepts only PDF files"}), 400
 
-    input_path = UPLOAD_FOLDER / filename
+    input_path = upload_path(filename)
     if not input_path.exists():
         return jsonify({"error": "Uploaded file not found"}), 404
 
@@ -404,7 +421,7 @@ def unlock_pdf():
     if not is_pdf(filename):
         return jsonify({"error": "Unlock PDF accepts only PDF files"}), 400
 
-    input_path = UPLOAD_FOLDER / filename
+    input_path = upload_path(filename)
     if not input_path.exists():
         return jsonify({"error": "Uploaded file not found"}), 404
 
@@ -440,7 +457,7 @@ def extract_text():
     if not is_pdf(filename):
         return jsonify({"error": "Extract Text accepts only PDF files"}), 400
 
-    input_path = UPLOAD_FOLDER / filename
+    input_path = upload_path(filename)
     if not input_path.exists():
         return jsonify({"error": "Uploaded file not found"}), 404
 
@@ -478,7 +495,7 @@ def pdf_info():
     if not filename:
         return jsonify({"error": "Filename missing"}), 400
 
-    input_path = UPLOAD_FOLDER / filename
+    input_path = upload_path(filename)
     if not input_path.exists():
         return jsonify({"error": "Uploaded file not found"}), 404
 
@@ -519,14 +536,14 @@ def jpg_to_pdf():
     try:
         images = []
         for filename in filenames:
-            file_path = UPLOAD_FOLDER / filename
+            file_path = upload_path(filename)
             img = Image.open(file_path).convert("RGB")
             images.append(img)
         first_image = images[0]
         other_images = images[1:]
         first_image.save(output_path, save_all=True, append_images=other_images)
         for filename in filenames:
-            remove_file(UPLOAD_FOLDER / filename)
+            remove_file(upload_path(filename))
         return jsonify({"success": True, "filename": output_filename, "download_url": f"/download/{output_filename}"})
     except Exception as e:
         return jsonify({"error": f"JPG to PDF failed: {str(e)}"}), 500
@@ -538,7 +555,7 @@ def pdf_to_word():
         return jsonify({"error": "pdf2docx is not installed"}), 500
     data = request.get_json(silent=True) or {}
     filename = data.get("filename")
-    input_path = UPLOAD_FOLDER / filename
+    input_path = upload_path(filename)
     output_filename = f"{Path(filename).stem}.docx"
     output_path = DOWNLOAD_FOLDER / output_filename
     try:
@@ -553,11 +570,11 @@ def pdf_to_word():
 
 @app.route("/convert/word-to-pdf", methods=["POST"])
 def word_to_pdf():
-    if docx_convert is None:
-        return jsonify({"error": "docx2pdf is not installed or not supported on this system"}), 500
+    if not WORD_TO_PDF_AVAILABLE:
+        return jsonify({"error": "Word to PDF needs Microsoft Word and is unavailable on this server"}), 501
     data = request.get_json(silent=True) or {}
     filename = data.get("filename")
-    input_path = UPLOAD_FOLDER / filename
+    input_path = upload_path(filename)
     output_filename = f"{Path(filename).stem}.pdf"
     output_path = DOWNLOAD_FOLDER / output_filename
     try:
@@ -574,7 +591,7 @@ def pdf_to_jpg():
         return jsonify({"error": "PyMuPDF is not installed"}), 500
     data = request.get_json(silent=True) or {}
     filename = data.get("filename")
-    input_path = UPLOAD_FOLDER / filename
+    input_path = upload_path(filename)
     output_zipname = f"{Path(filename).stem}_jpg.zip"
     output_zip_path = DOWNLOAD_FOLDER / output_zipname
     try:
@@ -613,4 +630,7 @@ def download(filename):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(
+        debug=os.environ.get("FLASK_DEBUG") == "1",
+        port=int(os.environ.get("PORT", 5000)),
+    )

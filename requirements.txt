@@ -1,7 +1,8 @@
-Flask
-gunicorn
-PyPDF2
-Pillow
-PyMuPDF
-pdf2docx
-docx2pdf
+Flask>=3.0
+gunicorn>=22.0
+PyPDF2>=3.0
+Pillow>=10.0
+PyMuPDF>=1.24
+pdf2docx>=0.5.8
+# Word -> PDF drives Microsoft Word, so install it only where Word can exist
+docx2pdf>=0.1.8; sys_platform == "win32" or sys_platform == "darwin"

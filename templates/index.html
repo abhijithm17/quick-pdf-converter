@@ -47,11 +47,13 @@
                         <h3>PDF to Word</h3>
                         <p>Convert PDF files into editable DOCX documents.</p>
                     </div>
+                    {% if word_to_pdf %}
                     <div class="tool-card" data-tool="word-to-pdf" data-accept=".doc,.docx" data-multiple="false">
                         <div class="icon-bg word-pdf"><i class="fa-solid fa-file-pdf"></i></div>
                         <h3>Word to PDF</h3>
                         <p>Make DOC and DOCX files easy to share as PDFs.</p>
                     </div>
+                    {% endif %}
                     <div class="tool-card" data-tool="jpg-to-pdf" data-accept=".jpg,.jpeg,.png" data-multiple="true">
                         <div class="icon-bg jpg-pdf"><i class="fa-regular fa-images"></i></div>
                         <h3>JPG to PDF</h3>
